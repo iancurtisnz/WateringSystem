@@ -1,0 +1,5 @@
+WaterSensor KEYWORD
+turnOnProbe KEYWORD
+turnOffProbe KEYWORD
+readSensor KEYWORD
+moistureLevel KEYWORD
