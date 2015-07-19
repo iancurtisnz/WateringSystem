@@ -1,6 +1,8 @@
 //Full wet 0
 //Full Dry 5v (possibly)
-#include "MoistureSensor.h"
+
+#include <Arduino.h>
+//#include <WProgram.h>
 
 class MoistureSensor{
   private:
@@ -19,19 +21,44 @@ class MoistureSensor{
     double sensorVoltage;
   
   public:
+  MoistureSensor(const int probePin, const int sensorPin, int wVoltage = 0, int dVoltage = 5, double mVoltage = 2.5);
+  ~MoistureSensor();
+  bool turnOnProbe();
+  bool turnOffProbe();
   
-  MoistureSensor(const int probePin, const int sensorPin, int wVoltage = 0, int dVoltage = 5, double mVoltage = 2.5) 
+  double readSensor();
+  void moistureLevel(double sVoltage);
+  
+  int getProbe();
+  int getSensor();
+  int getWetVoltage();
+  int getDryVoltage();
+  double getMoistVoltage();
+  
+  bool isDry();
+  bool isMoist();
+  bool isWet();
+
+  /** Setters */
+  void setWetVoltage(int wetVoltage);
+  void setDryVoltage(int dryVoltage);
+  void setMoistVoltage(double moistVoltage);
+  void setWettness(bool isD, bool isM, bool isW);
+};
+
+  MoistureSensor::MoistureSensor(const int probePin, const int sensorPin, int wVoltage, int dVoltage, double mVoltage) 
   : PROBE(probePin), SENSOR(sensorPin), wetVoltage(wVoltage), dryVoltage(dVoltage), moistVoltage(mVoltage), isDryState(true), isWetState(false), isMoistState(false) 
   {
     //setMoistVoltage(readSensor());
   }
 
-  ~MoistureSensor(){}
+  //Destructor
+  MoistureSensor::~MoistureSensor(){}
   
   /*
   Power on the Probe, delay to allow stabilisation and return true if successful
   */
-  bool turnOnProbe() {
+  bool MoistureSensor::turnOnProbe() {
     digitalWrite(PROBE, HIGH);
     delay(1000);
     return digitalRead(PROBE);
@@ -40,7 +67,7 @@ class MoistureSensor{
   /*
   Power off the Probe and return true if successful
   */
-  bool turnOffProbe() {
+  bool MoistureSensor::turnOffProbe() {
     digitalWrite(PROBE, LOW);
     return !digitalRead(PROBE);
   }
@@ -48,7 +75,7 @@ class MoistureSensor{
   /**
   Reads the Value of the Water sensor on the PIN it's on and returns a voltage
   */
-  double readSensor() {
+  double MoistureSensor::readSensor() {
     if (!digitalRead(PROBE)){
       turnOnProbe();
     }
@@ -64,7 +91,7 @@ class MoistureSensor{
   /*
   Sets the the flag as to whether the sensor is reading wet, dry or moist.
   */
-  void moistureLevel(double sVoltage){
+  void MoistureSensor::moistureLevel(double sVoltage){
     //TODO Fix this Logic...it wrong
     if(sVoltage >= getWetVoltage()) {
       setWettness(true, false, false);
@@ -79,21 +106,23 @@ class MoistureSensor{
 }
   //Decide what are public and private
   /** Getters */
-  int getWetVoltage() { return wetVoltage; }
-  int getDryVoltage() { return dryVoltage; }
-  double getMoistVoltage() { return moistVoltage; }
-  bool isDry() {return isDryState; }
-  bool isMoist() {return isMoistState; }
-  bool isWet() {return isWetState; }
+  int MoistureSensor::getProbe() { return PROBE; }
+  int MoistureSensor::getSensor() { return SENSOR; }
+  int MoistureSensor::getWetVoltage() { return wetVoltage; }
+  int MoistureSensor::getDryVoltage() { return dryVoltage; }
+  double MoistureSensor::getMoistVoltage() { return moistVoltage; }
+  
+  bool MoistureSensor::isDry() {return isDryState; }
+  bool MoistureSensor::isMoist() {return isMoistState; }
+  bool MoistureSensor::isWet() {return isWetState; }
 
   /** Setters */
-  void setWetVoltage(int wetVoltage) {  wetVoltage = wetVoltage; }
-  void setDryVoltage(int dryVoltage) { dryVoltage = dryVoltage; }
-  void setMoistVoltage(double moistVoltage) { moistVoltage = moistVoltage; }
-  void setWettness(bool isD, bool isM, bool isW) {
+  void MoistureSensor::setWetVoltage(int wetVoltage) {  wetVoltage = wetVoltage; }
+  void MoistureSensor::setDryVoltage(int dryVoltage) { dryVoltage = dryVoltage; }
+  void MoistureSensor::setMoistVoltage(double moistVoltage) { moistVoltage = moistVoltage; }
+  void MoistureSensor::setWettness(bool isD, bool isM, bool isW) {
       isDryState = isD;
       isMoistState = isM;
       isWetState = isW;
   }
     
-};
