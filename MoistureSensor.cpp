@@ -9,9 +9,10 @@ class MoistureSensor{
 
     const int PROBE;
     const int SENSOR;
+    const int ERROR_LED;
 
-    int wetVoltage;
-    int dryVoltage;
+    double wetVoltage;
+    double dryVoltage;
     double moistVoltage;
     bool isDryState;
     bool isWetState;
@@ -19,20 +20,24 @@ class MoistureSensor{
 
     int sensorValue;
     double sensorVoltage;
+
+    void setWettness(bool isD, bool isM, bool isW);
+    double readSensor();
+    void moistureLevel(double sVoltage);
+    bool turnOnErrorLED();
   
   public:
-  MoistureSensor(const int probePin, const int sensorPin, int wVoltage = .5, int dVoltage = 4.5, double mVoltage = 2.5);
+  MoistureSensor(const int probePin, const int sensorPin, const int ledPin = NULL, double wVoltage = .5, double dVoltage = 4.5, double mVoltage = 2.5);
   ~MoistureSensor();
   bool turnOnProbe();
   bool turnOffProbe();
   
-  double readSensor();
-  void moistureLevel(double sVoltage);
-  
   int getProbe();
   int getSensor();
-  int getWetVoltage();
-  int getDryVoltage();
+  int getErrorLED();
+
+  double getWetVoltage();
+  double getDryVoltage();
   double getMoistVoltage();
   
   bool isDry();
@@ -43,11 +48,10 @@ class MoistureSensor{
   void setWetVoltage(int wetVoltage);
   void setDryVoltage(int dryVoltage);
   void setMoistVoltage(double moistVoltage);
-  void setWettness(bool isD, bool isM, bool isW);
 };
 
-  MoistureSensor::MoistureSensor(const int probePin, const int sensorPin, int wVoltage, int dVoltage, double mVoltage) 
-  : PROBE(probePin), SENSOR(sensorPin), wetVoltage(wVoltage), dryVoltage(dVoltage), moistVoltage(mVoltage), isDryState(true), isWetState(false), isMoistState(false) 
+  MoistureSensor::MoistureSensor(const int probePin, const int sensorPin, const int ledPin, double wVoltage, double dVoltage, double mVoltage) 
+  : PROBE(probePin), SENSOR(sensorPin), ERROR_LED(ledPin), wetVoltage(wVoltage), dryVoltage(dVoltage), moistVoltage(mVoltage), isDryState(true), isWetState(false), isMoistState(false) 
   {
     //setMoistVoltage(readSensor());
   }
@@ -113,8 +117,8 @@ class MoistureSensor{
   /** Getters */
   int MoistureSensor::getProbe() { return PROBE; }
   int MoistureSensor::getSensor() { return SENSOR; }
-  int MoistureSensor::getWetVoltage() { return wetVoltage; }
-  int MoistureSensor::getDryVoltage() { return dryVoltage; }
+  double MoistureSensor::getWetVoltage() { return wetVoltage; }
+  double MoistureSensor::getDryVoltage() { return dryVoltage; }
   double MoistureSensor::getMoistVoltage() { return moistVoltage; }
   
   bool MoistureSensor::isDry() {return isDryState; }
